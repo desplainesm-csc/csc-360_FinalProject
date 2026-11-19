@@ -1,0 +1,108 @@
+@startuml
+class ChessGame {
+    - board: Board
+    - player1: Player
+    - player2: Player
+    - currentPlayer: Player
+    + main(args: String[]): void
+    + startGame(): void
+    + switchTurn(): void
+    + checkGameOver(): boolean
+    + handleMove(from: Square, to: Square): boolean
+}
+
+class Board {
+    - grid: Piece[][]
+    + initialize(): void
+    + isValidMove(from: Square, to: Square): boolean
+    + movePiece(from: Square, to: Square): boolean
+    + isCheck(color: String): boolean
+    + isCheckmate(color: String): boolean
+    + isStalemate(color: String): boolean
+    + isFull(): boolean
+}
+
+abstract class Player {
+    # color: String
+    + Player(color: String)
+    + getColor(): String
+    + {abstract} makeMove(board: Board): void
+}
+
+class HumanPlayer {
+    + HumanPlayer(color: String)
+    + makeMove(board: Board): void
+}
+
+class CpuPlayer {
+    - random: Random
+    + CpuPlayer(color: String)
+    + makeMove(board: Board): void
+}
+
+abstract class Piece {
+    # color: String
+    # position: Square
+    + Piece(color: String, position: Square)
+    + getColor(): String
+    + getPosition(): Square
+    + {abstract} isValidMove(board: Board, target: Square): boolean
+}
+
+class King {
+    + isValidMove(board: Board, target: Square): boolean
+}
+
+class Queen {
+    + isValidMove(board: Board, target: Square): boolean
+}
+
+class Bishop {
+    + isValidMove(board: Board, target: Square): boolean
+}
+
+class Knight {
+    + isValidMove(board: Board, target: Square): boolean
+}
+
+
+class Rook {
+    + isValidMove(board: Board, target: Square): boolean
+}
+
+class Pawn {
+    + isValidMove(board: Board, target: Square): boolean
+    + promote(): Piece
+}
+
+class Square {
+    - row: int
+    - column: int
+    - piece: Piece
+    + getPiece(): Piece
+    + setPiece(piece: Piece): void
+    + isOccupied(): boolean
+}
+
+class Random {
+}
+
+ChessGame "1" *-- "1" Board
+ChessGame "1" *-- "2" Player
+
+HumanPlayer --|> Player
+CpuPlayer --|> Player
+
+Piece <|-- King
+Piece <|-- Queen
+Piece <|-- Bishop
+Piece <|-- Knight
+Piece <|-- Rook
+Piece <|-- Pawn
+
+Board "1" *-- "8x8 or 64 fills" Square
+Square o-- "Occupies" Piece
+
+Player ..> Board : interacts with
+CpuPlayer ..> Random : uses
+@enduml
